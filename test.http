@@ -1,0 +1,73 @@
+### Requête pour récupérer toutes les plantes
+ GET http://localhost:3000/plants
+
+### Requête pour récupérer une plante selon son slug
+GET http://localhost:3000/plants/cosmos
+
+### Requête pour récupérer une plante selon son nom 
+GET http://localhost:3000/plants
+Content-Type: application/json
+
+{"plantName": "o"}
+
+### Requête pour créer un utilisateur
+POST http://localhost:3000/signup
+Content-Type: application/json
+
+{"user_name":"leo","email": "leo@mail.com", "user_password": "leoleoleo"} 
+
+### Requête pour supprimer son compte
+DELETE http://localhost:3000/users/2
+
+
+### Requête pour modifier son compte
+PATCH http://localhost:3000/users/6
+Content-Type: application/json
+
+{"city": "Laval", "email": "testmail@gmail.com"} 
+
+### Requête pour récupérer toutes les informations de son compte 
+GET http://localhost:3000/users/17
+Content-Type: application/json
+
+
+### Requête pour se connecter
+POST http://localhost:3000/login
+Content-Type: application/json
+
+{"email": "leo@mail.com", "user_password": "leoleoleo"}
+
+
+### Requête pour se déconnecter
+POST http://localhost:3000/users/logout
+
+### Requête pour récupérer les plantes du jardin d'un utilisateur
+GET http://localhost:3000/garden/1
+
+### Requête pour ajouter une plante au jardin d'un utilisateur
+POST http://localhost:3000/garden/1
+Content-Type: application/json
+
+{"plantId": 3}
+
+### Requête pour supprimer une plante du jardin d'un utilisateur
+DELETE http://localhost:3000/garden/1/1
+
+
+###Requête pour mettre à jour le dernier arrosage d'une plante par son utilisateur
+PATCH http://localhost:3000/garden/1/1
+
+
+### Requête pour récupérer toutes les tâches d'un utilisateur
+GET http://localhost:3000/tasks/1
+
+### Requête pour ajouter une tâche à un utilisateur
+POST http://localhost:3000/tasks/1
+Content-Type: application/json
+
+{"newTask": "Désherber", "position": 1}
+
+### Requête pour supprimer une tâche d'un utilisateur
+DELETE http://localhost:3000/tasks/1/2  
+
+

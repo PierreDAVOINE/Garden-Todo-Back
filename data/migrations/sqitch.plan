@@ -1,0 +1,5 @@
+%syntax-version=1.0.0
+%project=Garden-Todo-Back
+
+init 2023-05-04T08:49:35Z leo <leo.verger12@gmail.com> # structure
+seeding 2023-05-05T14:19:24Z leo <leo.verger12@gmail.com> # Seeding des informations de la BDD sur la table des plantes
