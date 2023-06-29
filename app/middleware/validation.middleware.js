@@ -1,5 +1,5 @@
-const schema = require("../schemas/api.schema");
-const emailValidator = require("email-validator");
+const schema = require('../schemas/api.schema');
+const emailValidator = require('email-validator');
 
 // validateMiddleware permet de valider les données reçues par l'API via des foprmulaires
 const validateMiddleware = {
@@ -16,15 +16,17 @@ const validateMiddleware = {
 
         //Gestion de l'erreur
         if (validateData.error) {
-          throw new Error(validateData.error);
+          return res.status(400).json({
+            message: "L'url de la plante des pas valide.",
+          });
         }
       }
       next();
     } catch (err) {
       console.error(err);
-      res
-        .status(500)
-        .send("Une erreur est survenue lors de la recherche de la plante.");
+      res.status(500).json({
+        message: 'Une erreur est survenue lors de la recherche de la plante.',
+      });
     }
   },
 
@@ -37,15 +39,17 @@ const validateMiddleware = {
           plantName,
         });
         if (validateData.error) {
-          throw new Error(validateData.error);
+          return res.status(400).json({
+            message: "Le format du nom de la plante n'est pas valide.",
+          });
         }
       }
       next();
     } catch (err) {
       console.error(err);
-      res
-        .status(500)
-        .send("Une erreur est survenue lors de la recherche de la plante.");
+      res.status(500).json({
+        message: 'Une erreur est survenue lors de la recherche de la plante.',
+      });
     }
   },
 
@@ -70,15 +74,18 @@ const validateMiddleware = {
         // On utilise le package emailValidator pour valider l'email
         const emailValid = emailValidator.validate(email);
         if (validateData.error || !emailValid) {
-          throw new Error(validateData.error || "Email invalide.");
+          return res.status(400).json({
+            message:
+              'Le format des données utilisateur transmises comporte un problème.',
+          });
         }
       }
       next();
     } catch (err) {
       console.error(err);
-      res
-        .status(500)
-        .send("Une erreur est survenue lors de la recherche de la plante.");
+      res.status(500).json({
+        message: "Une erreur est survenue lors de l'authentification.",
+      });
     }
   },
 
@@ -104,17 +111,19 @@ const validateMiddleware = {
         }
         const emailValid = emailValidator.validate(email);
         if (validateData.error || !emailValid) {
-          throw new Error(validateData.error || "Email invalide.");
+          return res.status(400).json({
+            message:
+              'Le format des données utilisateur transmises comporte un problème.',
+          });
         }
       }
       next();
     } catch (err) {
       console.error(err);
-      res
-        .status(500)
-        .send(
-          "Une erreur est survenue lors de la modification de l'utilisateur."
-        );
+      res.status(500).json({
+        message:
+          "Une erreur est survenue lors de la modification de l'utilisateur.",
+      });
     }
   },
 
@@ -128,15 +137,19 @@ const validateMiddleware = {
         });
         const emailValid = emailValidator.validate(email);
         if (validateData.error || !emailValid) {
-          throw new Error(validateData.error || "Email invalide.");
+          return res.status(400).json({
+            message:
+              'Le format des données utilisateur transmises comporte un problème.',
+          });
         }
       }
       next();
     } catch (err) {
       console.error(err);
-      res
-        .status(500)
-        .send("Une erreur est survenue lors de la connexion de l'utilisateur.");
+      res.status(500).json({
+        message:
+          "Une erreur est survenue lors de la connexion de l'utilisateur.",
+      });
     }
   },
 
@@ -150,15 +163,17 @@ const validateMiddleware = {
           position,
         });
         if (validateData.error) {
-          throw new Error(validateData.error);
+          return res.status(400).json({
+            message: "Le format de la tâche n'est pas valide.",
+          });
         }
       }
       next();
     } catch (err) {
       console.error(err);
-      res
-        .status(500)
-        .send("Une erreur est survenue lors de la connexion de l'utilisateur.");
+      res.status(500).json({
+        message: 'Une erreur est survenue lors de la création de la tâche.',
+      });
     }
   },
 
@@ -173,15 +188,17 @@ const validateMiddleware = {
           updatePosition,
         });
         if (validateData.error) {
-          throw new Error(validateData.error);
+          return res.status(400).json({
+            message: "Le format de la tâche n'est pas valide.",
+          });
         }
       }
       next();
     } catch (err) {
       console.error(err);
-      res
-        .status(500)
-        .send("Une erreur est survenue lors de la connexion de l'utilisateur.");
+      res.status(500).json({
+        message: 'Une erreur est survenue lors de la modification de la tâche.',
+      });
     }
   },
 };

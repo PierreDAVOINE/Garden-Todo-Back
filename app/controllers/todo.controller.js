@@ -1,4 +1,4 @@
-const datamapper = require("../models/todo.datamapper");
+const datamapper = require('../models/todo.datamapper');
 
 const controller = {
   //! Affiche la liste des tâches dans la todo list d'un utilisateur
@@ -6,22 +6,17 @@ const controller = {
     const { userId } = req.params;
 
     try {
-      //On va chercher les taches en BDD
+      // On va chercher les taches en BDD
       const tasks = await datamapper.getTasks(userId);
 
-      if (!tasks) {
-        throw new Error(
-          "Une erreur est survenue lors de la recherche des tâches."
-        );
-      }
-
+      // Sinon on les renvoies
       return res.json(tasks);
     } catch (err) {
       //Gestion de l'erreur
       console.error(err);
-      return res
-        .status(500)
-        .send("Une erreur est survenue lors de la recherche des tâches.");
+      return res.status(500).json({
+        message: 'Une erreur est survenue lors de récupération des tâches.',
+      });
     }
   },
 
@@ -37,18 +32,18 @@ const controller = {
       const task = await datamapper.addOneTask(newTask, position, userId);
 
       if (!task) {
-        throw new Error(
-          "Une erreur est survenue lors de l'enregistrement de la tâche."
-        );
+        return res.status(403).json({
+          message:
+            "Une erreur est survenue lors de l'enregistrement de la tâche.",
+        });
       }
-
       return res.json(task);
     } catch (err) {
       //Gestion de l'erreur
       console.error(err);
-      return res
-        .status(500)
-        .send("Une erreur est survenue lors de l'enregistrement de la tâche.");
+      return res.status(500).json({
+        message: 'Une erreur est survenue.',
+      });
     }
   },
 
@@ -57,21 +52,22 @@ const controller = {
     const { taskId } = req.params;
 
     try {
-      //on supprime la tâche de la BDD
+      // On supprime la tâche de la BDD
       const isDeleted = await datamapper.deleteOneTask(taskId);
-      if (isDeleted) {
-        res.json("Tâche supprimée.");
+      if (!isDeleted) {
+        return res.status(403).json({
+          message:
+            'Une erreur est survenue lors de la suppression de la tâche.',
+        });
       } else {
-        throw new Error(
-          "Une erreur est survenue lors de la suppression de la tâche."
-        );
+        res.json({ message: 'Tâche supprimée.' });
       }
     } catch (err) {
-      //Gestion de l'erreur
+      // Gestion de l'erreur
       console.error(err);
-      return res
-        .status(500)
-        .send("Une erreur est survenue lors de la suppression de la tâche.");
+      return res.status(500).json({
+        message: 'Une erreur est survenue lors de la suppression de la tâche.',
+      });
     }
   },
 
@@ -79,18 +75,20 @@ const controller = {
   updateOneTask: async (req, res) => {
     const { taskId } = req.params;
 
-    //Récupération des données du formulaire
+    // Récupération des données du formulaire
     let { updateTask, updateStatut, updatePosition } = req.body;
 
     try {
-      //On modifie la tâche
+      // On vérifie que la tâche existe bien en BDD
       const task = await datamapper.getOneTaskById(taskId);
 
       if (!task) {
-        throw new Error("La tâche que vous souhaitez modifier n'existe pas.");
+        return res.status(404).json({
+          message: "La tâche que vous souhaitez modifier n'existe pas.",
+        });
       }
 
-      //Modification de l'utilisateur dans la BDD
+      // Modification de l'utilisateur dans la BDD
       const updatedTask = await datamapper.updateOneTask(
         updateTask,
         updateStatut,
@@ -99,17 +97,18 @@ const controller = {
       );
 
       if (!updatedTask) {
-        throw new Error(
-          "Une erreur est survenue lors de la modification de la tâche."
-        );
+        return res.status(403).json({
+          message:
+            'Une erreur est survenue lors de la modification de la tâche.',
+        });
       }
 
       return res.json(updatedTask);
     } catch (err) {
       console.log(err);
-      return res
-        .status(500)
-        .send("Une erreur est survenue lors de la modification de la tâche.");
+      return res.status(500).json({
+        message: 'Une erreur est survenue lors de la modification de la tâche.',
+      });
     }
   },
 
@@ -134,17 +133,18 @@ const controller = {
         );
 
         if (!updatedTask) {
-          throw new Error(
-            "Une erreur est survenue lors de la modification de la tâche."
-          );
+          return res.status(403).json({
+            message:
+              'Une erreur est survenue lors de la réorganisation des tâches.',
+          });
         }
       }
       return res.json(true);
     } catch (error) {
       console.log(error);
-      return res
-        .status(500)
-        .send("Une erreur est survenue lors de la modification de la tâche.");
+      return res.status(500).json({
+        message: 'Une erreur est survenue lors de la modification des tâches.',
+      });
     }
   },
 };

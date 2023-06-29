@@ -1,7 +1,7 @@
-const datamapper = require("../models/users.datamapper");
-const bcrypt = require("bcrypt");
+const datamapper = require('../models/users.datamapper');
+const bcrypt = require('bcrypt');
 const saltRounds = 10;
-const loginService = require("../services/login.service");
+const loginService = require('../services/login.service');
 
 const controller = {
   //!Créer un compte
@@ -12,7 +12,7 @@ const controller = {
       // Vérification de l'existence de l'adresse mail de l'utilisateur dans la BDD pour pas de doublon
       const userExists = await datamapper.findByEmail(email);
       if (userExists) {
-        return res.send("Cet email est déjà utilisé.");
+        return res.status(401).json({ message: 'Cet email est déjà utilisé.' });
       }
 
       // Si données correctes, cryptage du mot de passe à l'aide du package bcrypt
@@ -28,9 +28,10 @@ const controller = {
       return res.json(newUser);
     } catch (error) {
       console.log(error);
-      res
-        .status(500)
-        .send("Une erreur est survenue lors de la création de l'utilisateur.");
+      return res.status(500).json({
+        message:
+          "Une erreur est survenue lors de la création de l'utilisateur.",
+      });
     }
   },
 
@@ -41,17 +42,18 @@ const controller = {
     try {
       const user = await datamapper.findById(userId);
       if (!user) {
-        return res.status(404).send("Utilisateur non trouvé.");
+        return res
+          .status(404)
+          .json({ message: 'Aucun compte trouvé avec cette adresse.' });
       }
       await datamapper.deleteUser(userId);
-      return res.send("Utilisateur supprimé.");
+      return res.send('Utilisateur supprimé.');
     } catch (error) {
       console.log(error);
-      res
-        .status(500)
-        .send(
-          "Une erreur est survenue lors de la suppression de l'utilisateur."
-        );
+      return res.status(500).json({
+        message:
+          "Une erreur est survenue lors de la suppression de l'utilisateur.",
+      });
     }
   },
 
@@ -59,22 +61,22 @@ const controller = {
   updateUser: async (req, res) => {
     const { userId } = req.params;
 
-    //Récupération des données du formulaire
+    // Récupération des données du formulaire
     const { user_name, email, user_password, city } = req.body;
 
     try {
-      //Va chercher le bon utilisateur dans la BDD
+      // Va chercher le bon utilisateur dans la BDD
       const user = await datamapper.findById(userId);
 
       if (!user) {
-        return res.status(404).send("Utilisateur non trouvé.");
+        return res.status(404).json({ message: 'Utilisateur non trouvé.' });
       }
 
-      //Vérification de l'existence de l'adresse mail de l'utilisateur dans la BDD pour pas de doublon
+      // Vérification de l'existence de l'adresse mail de l'utilisateur dans la BDD pour pas de doublon
       const userExists = await datamapper.findByEmailAndId(email);
 
       if (userExists) {
-        return res.send("Cet email est déjà utilisé.");
+        return res.status(401).json({ message: 'Cet email est déjà utilisé.' });
       }
 
       //Système pour que les champs non remplis ne soient pas modifiés
@@ -84,7 +86,7 @@ const controller = {
       let userEmail = email;
       if (!email) userEmail = user.email;
 
-      let cryptedPassword = "";
+      let cryptedPassword = '';
       if (user_password) {
         cryptedPassword = await bcrypt.hash(user_password, saltRounds);
       }
@@ -105,18 +107,18 @@ const controller = {
 
       // Gestion des erreurs
       if (!updatedUser) {
-        throw new Error(
-          "Une erreur est survenuelors de la modification de l'utilisateur."
-        );
+        return res.status(401).json({
+          message:
+            "Une erreur est survenue lors de la modification de l'utilisateur.",
+        });
       }
       return res.json(updatedUser);
     } catch (err) {
       console.error(err);
-      res
-        .status(500)
-        .send(
-          "Une erreur est survenue lors de la modification de l'utilisateur."
-        );
+      return res.status(500).json({
+        message:
+          "Une erreur est survenue lors de la modification de l'utilisateur.",
+      });
     }
   },
 
@@ -128,20 +130,18 @@ const controller = {
     try {
       const user = await datamapper.getOneUser(userId);
 
-      // Gestion des erreurs
       if (!user) {
-        throw new Error(
-          "Veuillez vous connecter afin d'accéder à ces informations."
-        );
+        return res.status(401).json({
+          message: "Veuillez vous connecter afin d'accéder à ces informations.",
+        });
       }
 
       return res.json(user);
     } catch (error) {
-      // En absence de token, on ne renvoie pas les données utilisateur au front
-      console.log("token invalide :", error);
-      res
-        .status(401)
-        .send("Veuillez vous connecter afin d'accéder à ces informations.");
+      console.error('User not found :', error);
+      return res.status(500).json({
+        message: "Veuillez vous connecter afin d'accéder à ces informations.",
+      });
     }
   },
 
@@ -165,17 +165,21 @@ const controller = {
 
       //Erreur si email ou mot de passe incorrects
       if (!user || !isPasswordValid) {
-        return res.status(403).send("Identifiant ou mot de passe incorrects.");
+        return res.status(401).json({
+          message: 'Identifiant ou mot de passe incorrects.',
+        });
       }
 
-      // Si identifiants sont correctes on génére un JWT pour l'utilisateur
+      // Si les identifiants sont correctes on génére un JWT pour l'utilisateur
       const token = await loginService.authentify(user.id);
 
       if (!token) {
-        throw new Error("Une erreur est survenue...");
+        return res.status(500).json({
+          message: "Une erreur est survenue lors de l'authentification.",
+        });
       }
 
-      // On renvoie le token et le pseudo de l'utilisateur
+      // On prépare le token et le pseudo de l'utilisateur
       const response = {
         logged: true,
         pseudo: user.user_name,
@@ -186,7 +190,9 @@ const controller = {
       return res.json(response);
     } catch (error) {
       console.log(error);
-      res.status(500).send("Une erreur est survenue...");
+      return res.status(500).json({
+        message: "Une erreur est survenue lors de l'authentification.",
+      });
     }
   },
 };

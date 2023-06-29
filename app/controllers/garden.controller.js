@@ -1,4 +1,4 @@
-const datamapper = require("../models/garden.datamapper");
+const datamapper = require('../models/garden.datamapper');
 
 const controller = {
   //!Affiche la liste des plantes présentes dans le jardin de l'utilisateur
@@ -10,18 +10,12 @@ const controller = {
       //Appel et envoi des donneés
       const garden = await datamapper.getGarden(userId);
 
-      if (!garden) {
-        throw new Error(
-          "Une erreur est survenue lors de la recherche des plantes."
-        );
-      }
-
       return res.json(garden);
     } catch (err) {
       console.error(err);
-      return res
-        .status(500)
-        .send("Une erreur est survenue lors de la recherche des plantes.");
+      return res.status(500).json({
+        message: 'Une erreur est survenue lors de la recherche des plantes.',
+      });
     }
   },
 
@@ -40,7 +34,9 @@ const controller = {
 
       //Gestion de l'erreur si la plante est déjà dans le jardin
       if (plantExist) {
-        throw new Error("Cette plante est déjà dans votre jardin.");
+        return res
+          .status(208)
+          .json({ message: 'Cette plante est déjà dans votre jardin !' });
       }
 
       // Ajout de la plante dans le jardin
@@ -48,9 +44,9 @@ const controller = {
       return res.json(newPlant);
     } catch (err) {
       console.error(err);
-      return res
-        .status(500)
-        .send("Une erreur est survenue lors de l'ajout de plante.");
+      return res.status(500).json({
+        message: "Une erreur est survenue lors de l'ajout de plante.",
+      });
     }
   },
 
@@ -63,17 +59,22 @@ const controller = {
       const plantExist = await datamapper.plantExist(userId, plantId);
 
       if (!plantExist) {
-        throw new Error("Cette plante n'est pas dans votre jardin.");
+        return res.status(404).json({
+          message:
+            'Impossible de trouver la plante, si le problème persiste, actualisez votre page.',
+        });
       }
 
       //Suppression de la plante du jardin si la plante est bien dans le jardin
       await datamapper.deletePlant(userId, plantId);
-      return res.send("La plante a bien été supprimée de votre jardin.");
+      return res.json({
+        message: 'La plante a bien été supprimée de votre jardin.',
+      });
     } catch (err) {
       console.error(err);
-      return res
-        .status(500)
-        .send("Une erreur est survenue lors de la suppression de plante.");
+      return res.status(500).json({
+        message: 'Une erreur est survenue lors de la suppression de plante.',
+      });
     }
   },
 
@@ -86,19 +87,20 @@ const controller = {
       const plantExist = await datamapper.plantExist(userId, plantId);
 
       if (!plantExist) {
-        throw new Error("Cette plante n'est pas dans votre jardin.");
+        return res.status(404).json({
+          message:
+            'Impossible de trouver la plante, si le problème persiste, actualisez votre page.',
+        });
       }
 
       //Mise à jour du dernier arrosage de la plante
       await datamapper.updateLastWatering(userId, plantId);
-      return res.send(
-        "Le dernier arrosage de la plante a bien été mis à jour."
-      );
+      return res.json({
+        message: 'La plante a bien été arrosée.',
+      });
     } catch (err) {
       console.error(err);
-      return res
-        .status(500)
-        .send("Une erreur est survenue lors de la mise à jour de la plante.");
+      return res.status(500).json({ message: `Un probleme est survenu.` });
     }
   },
 };

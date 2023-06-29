@@ -1,11 +1,11 @@
 // Connexion à la base de données
-const client = require("./pg.client");
+const client = require('./pg.client');
 
 const datamapper = {
   //Va chercher toutes les plantes triées par ordre alphabétique
   getPlants: async () => {
     const plants = await client.query(
-      "SELECT * FROM plant ORDER BY plant_name;"
+      'SELECT * FROM plant ORDER BY plant_name;'
     );
     return plants.rows;
   },
@@ -13,14 +13,13 @@ const datamapper = {
   //Va chercher une plante selon son slug_name
   getOnePlant: async (plantSlug) => {
     const plant = await client.query(
-      "SELECT * FROM plant WHERE slug_name =$1;",
+      'SELECT * FROM plant WHERE slug_name =$1;',
       [plantSlug]
     );
 
     if (plant.rowCount === 0) {
       return null;
     }
-    console.log(plant.rows);
     return plant.rows[0];
   },
 

@@ -1,4 +1,4 @@
-const loginService = require("../services/login.service");
+const loginService = require('../services/login.service');
 
 const authMiddleware = {
   // isLogged permet de vérifier si l'utilisateur est connecté
@@ -7,13 +7,13 @@ const authMiddleware = {
     const userId = req.params.userId;
 
     // Récupération du token dans le header de la requête s'il y en a un
-    const token = req.headers.authorization?.replace("Bearer ", "");
+    const token = req.headers.authorization?.replace('Bearer ', '');
 
     // Si pas de token :  error 401
     if (!token)
-      return res
-        .status(401)
-        .send("Veuillez vous connecter afin d'accéder a ces informations.");
+      return res.status(401).json({
+        message: "Veuillez vous connecter afin d'accéder a ces informations.",
+      });
 
     // On traduit le token
     const verifiedToken = loginService.getUser(token);
@@ -26,9 +26,9 @@ const authMiddleware = {
 
     //Si le token est expiré :  error 401
     if (now >= verifiedToken.exp || userId != verifiedUserId)
-      return res
-        .status(401)
-        .send("Veuillez vous connecter afin d'accéder a ces informations.");
+      return res.status(401).json({
+        message: "Veuillez vous connecter afin d'accéder a ces informations.",
+      });
 
     // Si tout est ok, on passe au middleware suivant
     next();
