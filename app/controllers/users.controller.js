@@ -1,5 +1,5 @@
 const datamapper = require('../models/users.datamapper');
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 const saltRounds = 10;
 const loginService = require('../services/login.service');
 
