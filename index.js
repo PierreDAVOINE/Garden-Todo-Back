@@ -2,6 +2,7 @@ require('dotenv').config();
 // Initialisation d'express et de ses dépendances
 const express = require('express');
 const cors = require('cors');
+const reqSanitizer = require('./app/middleware/reqSanitizer.middleware.js');
 
 // Initialisation des routes
 const router = require('./app/routers/router.js');
@@ -17,7 +18,11 @@ app.use(
     origin: 'http://localhost:5173',
   })
 );
+// On utilise express.json pour parser les requêtes en json
 app.use(express.json());
+
+// On utilise le sanitizer pour éviter les injections de code
+app.use(reqSanitizer);
 
 // Utilisation des routers
 app.use('/plants', router.plants);

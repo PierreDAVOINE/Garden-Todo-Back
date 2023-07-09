@@ -10,16 +10,18 @@ const datamapper = {
     return plants.rows;
   },
 
-  //Va chercher une plante selon son slug_name
+  // Va chercher une plante selon son slug_name
   getOnePlant: async (plantSlug) => {
+    // On utilise le slug_name pour récupérer la plante
     const plant = await client.query(
       'SELECT * FROM plant WHERE slug_name =$1;',
       [plantSlug]
     );
-
+    // Si la plante n'existe pas on renvoie null
     if (plant.rowCount === 0) {
       return null;
     }
+    // Sinon on renvoie la plante
     return plant.rows[0];
   },
 

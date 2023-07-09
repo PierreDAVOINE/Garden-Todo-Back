@@ -15,12 +15,13 @@ const controller = {
       //Appel et envoi des données
       const plant = await datamapper.getOnePlant(plantSlug);
 
-      // Gestion de la 404
+      // Si pas de plante trouvée on renvoi un code 404
       if (!plant) {
         return res.status(404).json({
           message: "Cette plante n'éxiste pas dans notre base de données.",
         });
       }
+      // Sinon on renvoie la plante en JSON
       return res.json(plant);
     } catch (err) {
       console.error(err);
@@ -32,6 +33,7 @@ const controller = {
 
   //!Affiche une plante de la BDD en fonction de son nom
   getNamePlant: async (req, res) => {
+    // On récupère le nom de la plante dans l'url de la requête
     const { plantName } = req.params;
 
     try {

@@ -121,7 +121,9 @@ const controller = {
       for (const task of newTasks) {
         const checkTask = await datamapper.getOneTaskById(task.id);
         if (!checkTask) {
-          throw new Error("La tâche que vous souhaitez modifier n'existe pas.");
+          return res.status(403).json({
+            message: "Impossible de modifier l'ordre des tâches.",
+          });
         }
 
         //Modification de l'utilisateur dans la BDD

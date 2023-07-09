@@ -50,33 +50,15 @@ CREATE TABLE task (
     task_description TEXT NOT NULL,
     statut  BOOLEAN NOT NULL,
     position INT NOT NULL,
-    user_id INT NOT NULL REFERENCES "utilisateur"("id")
+    user_id INT NOT NULL REFERENCES "utilisateur"("id") ON DELETE CASCADE
 );
 
+-- Création de la table de liaison "own"
 CREATE TABLE own (
     id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    user_id INT NOT NULL REFERENCES "utilisateur"("id"),
+    user_id INT NOT NULL REFERENCES "utilisateur"("id") ON DELETE CASCADE,
     plant_id INT REFERENCES "plant"("id"),
     last_watering TIMESTAMPTZ NOT NULL DEFAULT now()
 );
-
--- CREATE TABLE task (
---     id int GENERATED ALWAYS AS IDENTITY PRIMARY KEY, 
---     -- title VARCHAR(255) NOT NULL,
---     task_description TEXT NOT NULL, 
---     statut BOOLEAN NOT NULL,
---     position INT NOT NULL,
---     user_id INT NOT NULL REFERENCES "utilisateur"("id"),
---     -- creation_date TIMESTAMPTZ NOT NULL DEFAULT now(),
---     -- plant_id INT REFERENCES "plant"("id"),
--- );
-
-ALTER TABLE task DROP CONSTRAINT task_user_id_fkey;
-ALTER TABLE task ADD CONSTRAINT task_user_id_fkey FOREIGN KEY (user_id) REFERENCES utilisateur (id) ON DELETE CASCADE;
-
-ALTER TABLE own DROP CONSTRAINT own_user_id_fkey;
-ALTER TABLE own ADD CONSTRAINT own_user_id_fkey FOREIGN KEY (user_id) REFERENCES utilisateur(id) ON DELETE CASCADE;
-
-
 
 COMMIT;
