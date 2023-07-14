@@ -1,5 +1,5 @@
-require("dotenv").config();
-const jwt = require("jsonwebtoken");
+require('dotenv').config();
+const jwt = require('jsonwebtoken');
 
 module.exports = {
   // La fonction permet de générer un JWT à partir du user id et du secret
@@ -16,7 +16,8 @@ module.exports = {
     return token;
   },
 
-  // La fonction permet de récupérer les données utilisateur à partir du token
+  // La fonction permet de vérifier le token
+  // et récupérer les données utilisateur à partir du token
   getUser(token) {
     if (!token) {
       return null;
