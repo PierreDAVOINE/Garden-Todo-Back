@@ -8,7 +8,6 @@ const authMiddleware = {
 
     // Récupération du token dans le header de la requête s'il y en a un
     const token = req.headers.authorization?.replace('Bearer ', '');
-
     // Si pas de token :  error 401
     if (!token)
       return res.status(401).json({
@@ -19,6 +18,7 @@ const authMiddleware = {
     const verifiedToken = loginService.getUser(token);
 
     // On calcule le timestamp de la date et heure actuelle
+    // On divise par 1000 car le timestamp est en millisecondes et on le veux en secondes
     const now = Math.floor(Date.now() / 1000);
 
     //On vérifie si userId === verifiedToken.userId

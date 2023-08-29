@@ -63,7 +63,7 @@ const controller = {
 
     // Récupération des données du formulaire
     const { user_name, email, user_password, city } = req.body;
-
+    console.log(req.body);
     try {
       // Va chercher le bon utilisateur dans la BDD
       const user = await datamapper.findById(userId);
@@ -73,10 +73,12 @@ const controller = {
       }
 
       // Vérification de l'existence de l'adresse mail de l'utilisateur dans la BDD pour pas de doublon
-      const userExists = await datamapper.findByEmailAndId(email);
-
+      const userExists = await datamapper.findByEmailAndId(email, userId);
+      console.log('exists? : ', userExists);
       if (userExists) {
-        return res.status(401).json({ message: 'Cet email est déjà utilisé.' });
+        return res
+          .status(401)
+          .json({ message: "Impossible d'utiliser cet email." });
       }
 
       //Système pour que les champs non remplis ne soient pas modifiés
