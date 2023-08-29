@@ -12,7 +12,8 @@ const controller = {
     const { plantSlug } = req.params;
 
     try {
-      //Appel et envoi des données
+      // On appelle la méthode getOnePlant du datamapper en lui passant le slug_name de la plante
+      // On stocke le résultat dans une constante "plant"
       const plant = await datamapper.getOnePlant(plantSlug);
 
       // Si pas de plante trouvée on renvoi un code 404
